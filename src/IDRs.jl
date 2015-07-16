@@ -25,7 +25,7 @@ export idr, syl, stein
 function omega(t, s, angle = .7)
         ns = vecnorm(s)
         nt = vecnorm(t)
-        ts = fro_dot(t,s)
+        ts = frodot(t,s)
         rho = abs(ts/(nt*ns))
         om = ts/(nt*nt)
         if rho < angle 
@@ -81,8 +81,10 @@ function idr(op, args, C, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zeros(C))
             
             Q = c[1]*U[:,:, k]
             for i = k+1:s
-                 V += c[i-k+1]*G[:,:, i]
-                 Q += c[i-k+1]*U[:,:, i]
+                for i1 in 1:n, j1 in 1:b
+                    V[i1, j1] += c[i-k+1]*G[i1, j1, i]
+                    Q[i1, j1] += c[i-k+1]*U[i1, j1, i]
+                end
             end
         #
         # Compute new U[:,k] and G[:,k], G[:,k] is in space G_j
@@ -92,15 +94,17 @@ function idr(op, args, C, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zeros(C))
         #
         # Bi-Orthogonalise the new basis vectors: 
            for i in 1:k-1
-                 alpha = frodot(P[:,:, i],G[:,:, k])/M[i,i]
-                 G[:,:, k] = G[:,:, k] - alpha*G[:,:, i]
-                 U[:,:, k] = U[:,:, k] - alpha*U[:,:, i]
+                alpha = frodot(P[:,:, i],G[:,:, k])/M[i,i]
+                for i1 in 1:n, j1 in 1:b
+                    G[i1, j1, k] -=  alpha*G[i1, j1, i]
+                    U[i1, j1, k] -=  alpha*U[i1, j1, i]
+                end
+
            end
         #
         # New column of M = P"*G  (first k-1 entries are zero)
             for i =k:s
                 M[i,k] = frodot(G[:,:, k],P[:,:, i] )       
-
             end
         #
         #  Make r orthogonal to q_i, i = 1..k 
