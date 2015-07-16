@@ -1,6 +1,6 @@
 module IDRs
 
-export idr, syl, stein
+export idrs, syl, stein
 
 # Copyright (c) 2015 M. Schauer, R. Astudillo,  M. B. van Gijzen
 #
@@ -38,13 +38,13 @@ function frodot(A,B)
 end
 
 stein_op(X, A, B) = X + A*X*B
-stein(A, B, C, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zeros(C)) = idr(stein_op, (A,B), C,s,tol,maxit,X0)
+stein(A, B, C, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zeros(C)) = idrs(stein_op, (A,B), C,s,tol,maxit,X0)
 
 syl_op(X, A, B) = A*X + X*B
-syl(A, B, C, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zeros(C)) = idr(syl_op, (A,B), C, s, tol, maxit, X0)
+syl(A, B, C, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zeros(C)) = idrs(syl_op, (A,B), C, s, tol, maxit, X0)
 
 
-function idr(op, args, C, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zeros(C))
+function idrs(op, args, C, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zeros(C))
     n = size(C,1)
     b = size(C,2)
     X = X0
