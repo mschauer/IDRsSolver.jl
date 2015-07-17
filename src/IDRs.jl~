@@ -41,6 +41,12 @@ function omega(t, s, angle = .7)
 end
 
 stein_op(X, A, B) = X + A*X*B
+#function stein_op{T<:BLAS.BlasFloat}(X::StridedMatrix{T}, A, B) 
+#    Y = copy(X)
+#    BLAS.gemm!('N', 'N', one(T), A, X*B, 1., Y)
+#    Y
+#end
+
 stein(A, B, C, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zeros(C)) = idrs(stein_op, (A,B), C,s,tol,maxit,X0)
 
 syl_op(X, A, B) = A*X + X*B
