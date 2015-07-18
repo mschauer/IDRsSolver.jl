@@ -1,10 +1,15 @@
-IDRS.jl -- Induced Dimension Reduction method -- Version 0.1
-===========================================================
+IDRsSolver.jl
+============================
 
-idrs() solves a general linear matrix equation
+The Induced Dimension Reduction method is a family of simple and fast Krylov
+subspace algorithms for solving large nonsymmetric linear systems. The idea
+behind the IDR(s) variant is to generate residuals that are in the nested
+subspaces of shrinking dimension s. 
+
+The function idrs() solves a general linear matrix equation
 
                          0 = C - op(X, args...) 
-
+ 
 where op is a linear operator in X, for example 
         
         X -> X + A*X*B (Stein equation)
@@ -32,7 +37,8 @@ Synonyms
 Arguments
 ---------
        
-       s -- dimension of the 'shadow space'. Normally, a higher s gives faster convergence, but also  makes the method more expensive.
+       s -- dimension reduction number. Normally, a higher s gives faster convergence, 
+            but also  makes the method more expensive.
        tol -- tolerance of the method.  
        maxit -- maximum number of iterations
 
