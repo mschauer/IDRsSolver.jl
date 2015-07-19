@@ -21,7 +21,7 @@ function omega(t, s, angle = .7)
 end
 
 linsys_op(X, A) = A*X
-idrs(A, C, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zeros(C)) = IDRsSolver(stein_op, (A), C,s,tol,maxit,X0)
+idrs(A, C, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zeros(C)) = IDRsSolver(linsys_op, (A), C,s,tol,maxit,X0)
 
 stein_op(X, A, B) = X + A*X*B
 stein(A, B, C, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zeros(C)) = IDRsSolver(stein_op, (A,B), C,s,tol,maxit,X0)
