@@ -23,16 +23,16 @@ or
 Syntax
 ------
 
-        X = idrs(op, args, C, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zeros(C)) 
+        X = idrs_core(op, args, C, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zeros(C)) 
 
 
         C and X must be n-by-b matrices. 
 
 Synonyms
 --------
-
-        stein(A, B, C, ...) = idrs((X,A,B) -> X + A*X*B, (A, B), C, ...) solves the Stein equation.
-        syl(A, B, C, ...) = idrs((X,A,B) -> A*X + X*B, (A, B), C, ...) solves the Sylvester equation.
+        idrs(A, b, ...) = idrs_core((x,A) -> A*x, (A,), b, ...) solves the linear equation equation Ax = b.
+        stein(A, B, C, ...) = idrs_core((X,A,B) -> X + A*X*B, (A, B), C, ...) solves the Stein equation.
+        syl(A, B, C, ...) = idrs_core((X,A,B) -> A*X + X*B, (A, B), C, ...) solves the Sylvester equation.
 
 Arguments
 ---------
