@@ -20,14 +20,18 @@ function omega(t, s, angle = .7)
     om
 end
 
+linsys_op(X, A) = A*X
+idrs(A, C, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zeros(C)) = idrs_core(linsys_op, (A), C,s,tol,maxit,X0)
+
 stein_op(X, A, B) = X + A*X*B
-stein(A, B, C, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zeros(C)) = idrs(stein_op, (A,B), C,s,tol,maxit,X0)
+stein(A, B, C, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zeros(C)) = idrs_core(stein_op, (A,B), C,s,tol,maxit,X0)
 
 syl_op(X, A, B) = A*X + X*B
-syl(A, B, C, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zeros(C)) = idrs(syl_op, (A,B), C, s, tol, maxit, X0)
+syl(A, B, C, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zeros(C)) = idrs_core(syl_op, (A,B), C, s, tol, maxit, X0)
 
 
-function idrs{T}(op, args, C::T, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zero(C))
+function idrs_core{T}(op, args, C::T, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zero(C))
+
     X = X0
     R = C - op(X, args...)
     tolc = tol*anorm(C)
