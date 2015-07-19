@@ -1,6 +1,6 @@
 module IDRsSolver
 
-export idrs, syl, stein
+export idrs, syl, stein, idrs_core
 
 arand(C) = rand(size(C))
 #adot(A,B) = vecdot(A, B)
