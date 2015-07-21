@@ -11,15 +11,15 @@ C = Xsol + A*Xsol*B
 D = A*Xsol + Xsol*B
 b = A*xsol
 
-maxit = n*n*n
+maxiter = n*n*n
 tol = 1E-8
 s = 8
 
-X = stein(A, B, C, s, tol, maxit)
+X, _ = stein(A, B, C; s=s, tol=tol, maxiter=maxiter)
 @test vecnorm(Xsol - X) <= 10*tol*vecnorm(C)
 
-X = syl(A, B, D, s, tol, maxit)
+X, _ = syl(A, B, D; s=s, tol=tol, maxiter=maxiter)
 @test vecnorm(Xsol - X) <= 10*tol*vecnorm(D)
 
-x = idrs(A, b, s, tol, maxit)
+x, _ = idrs(A, b; s=s, tol=tol, maxiter=maxiter)
 @test norm(xsol - x) <= 10*tol*norm(b)

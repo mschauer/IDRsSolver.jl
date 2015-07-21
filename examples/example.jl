@@ -18,8 +18,8 @@ n = m*m*m
 Sx = sparse(Tridiagonal((-eps1/h^2-beta[1]/(2*h))*ones(m-1),2*eps1/h^2*ones(m),(-eps1/h^2+beta[1]/(2*h))*ones(m-1)))
 Sy = sparse(Tridiagonal((-eps1/h^2-beta[2]/(2*h))*ones(m-1),2*eps1/h^2*ones(m),-eps1/h^2+beta[2]/(2*h)*ones(m-1)))
 Sz = sparse(Tridiagonal((-eps1/h^2-beta[3]/(2*h))*ones(m-1),2*eps1/h^2*ones(m),-eps1/h^2+beta[3]/(2*h)*ones(m-1)))
-Is = speye(m,m)       
-A = kron(kron(Is,Is),Sx) + kron(kron(Is,Sy),Is)+ kron(kron(Sz,Is),Is) -r*I
+Is = speye(m)       
+A = kron(kron(Is,Is),Sx) + kron(kron(Is,Sy),Is)+ kron(kron(Sz,Is),Is) -r*speye(n)
 
 x = linspace(h,1-h,m)
 sol = kron(kron(x.*(1-x),x.*(1-x)),x.*(1-x))
@@ -39,11 +39,11 @@ println(" ")
 # Defaults for the iterative solvers:
 
 tol = 1e-8
-maxit = 1000
+maxiter = 1000
       
 s = 4
 println("IDR(4) iteration...")
-time = @elapsed x = idrs( A, b, s, tol, maxit )
+time = @elapsed x, _ = idrs( A, b; s=s, tol=tol, maxiter=maxiter)
 #       resvec = log10(resvec/resvec(1))
 
 println("Final accuracy: ", norm(b-A*x)/norm(b))

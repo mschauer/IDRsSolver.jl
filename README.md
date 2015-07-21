@@ -23,10 +23,12 @@ or
 Syntax
 ------
 
-        X = idrs_core(op, args, C, s = 8, tol = 1E-8, maxit = length(C)^2, X0 = zeros(C)) 
+        X, h::ConvergenceHistory = idrs_core{T}(op, args, C::T, X0 = zero(C); s = 8, tol = sqrt(eps(anorm(C))), maxiter = length(C)^2)
 
 
-        C and X must be n-by-b matrices. 
+        The right hand side C must support vecnorm, vecdot, copy!, rand! and axpy! or import and overload
+        the abstract functions adot, anorm, arand! and aaxpy! from module IDRsSolver used by the procedure.
+        .
 
 Synonyms
 --------
@@ -40,7 +42,7 @@ Arguments
        s -- dimension reduction number. Normally, a higher s gives faster convergence, 
             but also  makes the method more expensive.
        tol -- tolerance of the method.  
-       maxit -- maximum number of iterations
+       maxiter -- maximum number of iterations
 
        x0 -- Initial guess.
        
@@ -48,6 +50,14 @@ Output
 ------
 
         X -- Approximated solution by IDR(s)
+        h -- Convergence history
+        
+
+        The [`ConvergenceHistory`](https://github.com/JuliaLang/IterativeSolvers.jl/issues/6) type provides information about the iteration history. 
+            - `isconverged::Bool`, a flag for whether or not the algorithm is converged.
+            - `threshold`, the convergence threshold
+            - `residuals::Vector`, the value of the convergence criteria at each iteration        
+        
         
         If ||C-op(X)||_F > tol, the function gives a warning.
 
