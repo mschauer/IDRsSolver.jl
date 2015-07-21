@@ -44,7 +44,6 @@ maxiter = 1000
 s = 4
 println("IDR(4) iteration...")
 time = @elapsed x, _ = idrs( A, b; s=s, tol=tol, maxiter=maxiter)
-#       resvec = log10(resvec/resvec(1))
 
 println("Final accuracy: ", norm(b-A*x)/norm(b))
 println("CPU time: ", time, "s.")
