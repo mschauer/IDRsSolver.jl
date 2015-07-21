@@ -65,8 +65,8 @@ function idrs_core{T}(op, args, C::T, s = 8, tol = 1E-8, maxit = length(C)^2, X0
 
             # Solve small system and make v orthogonal to P
 
-#            c = M[k:s,k:s]\f[k:s] 
-            c = lufact!(M[k:s,k:s])\f[k:s]
+            c = \(LowerTriangular(M[k:s,k:s]),f[k:s])
+            M[k:s, k:s]
             V[:] = G[k]
             scale!(c[1], V)
         
