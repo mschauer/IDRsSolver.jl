@@ -58,13 +58,12 @@ function idrs_core{T}(op, args, C::T, X0 = zero(C); s = 8, tol = sqrt(eps(anorm(
 
     X = X0
     R = C - op(X, args...)
-    tolc = tol 
     normR = anorm(R)
     res = [normR]
 	iter = 0                 
 
-    if normR <= tolc           # Initial guess is a good enough solution
-        return X0, ConvergenceHistory(0<= res[end] < tolc, tolc, length(resnorms), resnorms)
+    if normR <= tol           # Initial guess is a good enough solution
+        return X0, ConvergenceHistory(res[end] < tol, tol, length(res), res)
     end
     
     Z = zero(C)
@@ -75,15 +74,15 @@ function idrs_core{T}(op, args, C::T, X0 = zero(C); s = 8, tol = sqrt(eps(anorm(
     Q = copy(Z)
     V = copy(Z)
     
-    M = eye(s,s)
-    f = zeros(s)
-    c = zeros(s)
+    M = eye(eltype(C),s,s)
+    f = zeros(eltype(C),s)
+    c = zeros(eltype(C),s)
 
     om = 1.
     iter = 0
-    while normR > tolc && iter < maxiter
+    while normR > tol && iter < maxiter
         for i in 1:s,
-            f[i] = adot(R,P[i])
+            f[i] = adot(P[i], R)
         end
         for k in 1:s 
 
@@ -118,10 +117,10 @@ function idrs_core{T}(op, args, C::T, X0 = zero(C); s = 8, tol = sqrt(eps(anorm(
                 aaxpy!(-alpha, U[i], U[k])
             end
 
-            # New column of M = P"*G  (first k-1 entries are zero)
+            # New column of M = P'*G  (first k-1 entries are zero)
 
             for i in k:s
-                M[i,k] = adot(G[k],P[i])       
+                M[i,k] = adot(P[i],G[k])       
             end
 
             #  Make r orthogonal to q_i, i = 1..k 
@@ -133,8 +132,8 @@ function idrs_core{T}(op, args, C::T, X0 = zero(C); s = 8, tol = sqrt(eps(anorm(
             normR = anorm(R)
             res = [res; normR]
             iter += 1
-            if normR < tolc || iter > maxiter
-                return X, ConvergenceHistory(0<res[end]<tolc, tolc, length(res), res)
+            if normR < tol || iter > maxiter
+                return X, ConvergenceHistory(normR < tol, tol, length(res), res)
             end 
             if k < s 
                 f[k+1:s] = f[k+1:s] - beta*M[k+1:s,k]
@@ -147,7 +146,7 @@ function idrs_core{T}(op, args, C::T, X0 = zero(C); s = 8, tol = sqrt(eps(anorm(
 
         copy!(V, R)
         Q = op(V, args...)
-        om::Float64 = omega(Q, R, 0.7)
+        om = omega(Q, R, 0.7)
         aaxpy!(-om, Q, R)
         aaxpy!(om, V, X)
 
@@ -159,7 +158,7 @@ function idrs_core{T}(op, args, C::T, X0 = zero(C); s = 8, tol = sqrt(eps(anorm(
     if normR > tolc
         warn("idrs() did not converge")
     end
-    return X, ConvergenceHistory(0<res[end]<tolc, tolc, length(res), res)
+    return X, ConvergenceHistory(res[end]<tol, tol, length(res), res)
 end
 
 end # module
